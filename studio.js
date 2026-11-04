@@ -55,6 +55,9 @@ if (designNumber === '2') {
 if (designNumber === '3') {
   document.querySelector('.hero .button').href = '#classes';
   document.querySelector('#hero-schedule-label').textContent = '다가오는 수업 보기';
+  document.querySelector('.hero-entry').hidden = true;
+  const homeSchedule = document.querySelector('#classes');
+  homeSchedule.after(document.querySelector('#my-booking'));
 }
 
 const classes = [
@@ -109,6 +112,7 @@ const copyStatus = document.querySelector('#copy-status');
 function createScheduleRow({ item, id }, returnHash) {
   const row = document.createElement('article');
   row.className = 'class-row';
+  row.dataset.date = item.date;
   row.dataset.day = item.weekday;
   row.dataset.level = item.level;
   row.dataset.period = item.period;
@@ -310,7 +314,7 @@ document.querySelector('#booking-lookup').addEventListener('click', () => {
   lookupForm.requestSubmit();
 });
 
-const filters = { day: '', level: '', period: '' };
+const filters = { date: '', day: '', level: '', period: '' };
 
 function filterSchedule() {
   let count = 0;
@@ -329,6 +333,20 @@ function filterSchedule() {
 }
 
 const filterGroups = document.querySelectorAll('.filter-chips');
+const dateFilter = document.querySelector('#schedule-date');
+const scheduleDateFormat = new Intl.DateTimeFormat('ko-KR', {
+  month: 'long', day: 'numeric', weekday: 'short', timeZone: 'UTC',
+});
+for (const date of new Set(sessions.map(({ item }) => item.date))) {
+  const option = document.createElement('option');
+  option.value = date;
+  option.textContent = scheduleDateFormat.format(new Date(date + 'T00:00:00Z'));
+  dateFilter.append(option);
+}
+dateFilter.addEventListener('change', () => {
+  filters.date = dateFilter.value;
+  refreshScheduleFilters();
+});
 const filterPanel = document.querySelector('#schedule-filter-panel');
 const narrowSchedule = matchMedia('(max-width: 600px)');
 function setFilterPanelDefault() {
@@ -338,6 +356,7 @@ narrowSchedule.addEventListener('change', setFilterPanelDefault);
 setFilterPanelDefault();
 
 function refreshScheduleFilters() {
+  dateFilter.value = filters.date;
   for (const group of filterGroups) {
     for (const button of group.querySelectorAll('button')) {
       button.setAttribute('aria-pressed', String(button.dataset.value === filters[group.dataset.filter]));
@@ -346,6 +365,7 @@ function refreshScheduleFilters() {
   const active = [...document.querySelectorAll('.filter-chips button[aria-pressed="true"]')]
     .filter(button => button.dataset.value)
     .map(button => button.textContent.trim());
+  if (filters.date) active.unshift(dateFilter.selectedOptions[0].textContent);
   const summary = document.querySelector('#active-filters');
   summary.textContent = '선택한 필터 · ' + active.join(' · ');
   summary.hidden = active.length === 0;
@@ -354,7 +374,7 @@ function refreshScheduleFilters() {
 }
 
 function resetScheduleFilters(level = '') {
-  Object.assign(filters, { day: '', level, period: '' });
+  Object.assign(filters, { date: '', day: '', level, period: '' });
   refreshScheduleFilters();
 }
 
@@ -519,22 +539,42 @@ showAcademySlide();
 setAcademyAutoplay(academyPlaying);
 
 const heroVideo = document.querySelector('.hero-video');
+const heroPlayback = document.querySelector('.hero-playback');
+let heroPlaybackChoice;
+
+function updateHeroPlayback() {
+  const playing = !heroVideo.paused && !heroVideo.hidden;
+  heroPlayback.setAttribute('aria-label', playing ? '영상 일시정지' : '영상 재생');
+  heroPlayback.textContent = playing ? 'Ⅱ' : '▶';
+}
 
 async function syncHeroVideo() {
-  if (studioHome.hidden) {
+  heroPlayback.hidden = studioHome.hidden;
+  const shouldPlay = heroPlaybackChoice ?? !reducedMotion.matches;
+  if (studioHome.hidden || !shouldPlay) {
     heroVideo.pause();
-    heroVideo.hidden = true;
+    heroVideo.hidden = studioHome.hidden || reducedMotion.matches;
+    updateHeroPlayback();
     return;
   }
 
   try {
     await heroVideo.play();
-    if (!studioHome.hidden && !heroVideo.paused) heroVideo.hidden = false;
+    if (!studioHome.hidden && (heroPlaybackChoice ?? !reducedMotion.matches) && !heroVideo.paused) heroVideo.hidden = false;
   } catch {
     // Keep the cover image if the browser blocks playback.
   }
+  updateHeroPlayback();
 }
 
+heroPlayback.addEventListener('click', () => {
+  heroPlaybackChoice = heroVideo.paused;
+  syncHeroVideo();
+});
 heroVideo.src = designNumber === '2' ? 'studio-tour-2.mp4' : 'cover-' + designNumber + '.mp4';
 syncHeroVideo();
 window.addEventListener('hashchange', syncHeroVideo);
+reducedMotion.addEventListener('change', () => {
+  if (reducedMotion.matches && heroPlaybackChoice === true) heroPlaybackChoice = undefined;
+  syncHeroVideo();
+});

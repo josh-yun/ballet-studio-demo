@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=studio-39"><script defer src="studio.js?v=studio-39"></script>
+<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=reference-access-47"><script defer src="studio.js?v=reference-access-47"></script>
 <body id="top">
 <header><a class="logo" href="#top"></a><nav aria-label="주 메뉴"><a href="#my-booking">내 예약</a><a href="#academy">학원 소개</a><a href="#journal">발레 노트</a><a class="nav-book" href="#full-schedule">수업 예약 ↗</a></nav></header>
 <div class="theme-picker">
@@ -26,20 +26,27 @@
     <p class="hero-kicker"><span id="tagline"></span><span class="sample-label">웹사이트 시안</span></p>
     <h1 id="hero-title">성인 발레 수업</h1>
     <p id="intro"></p>
+    <p class="hero-entry">발레 경험 없이 시작할 수 있어요. 원하는 날짜에 1회씩 예약하세요.</p>
     <div class="hero-actions">
       <a class="button" href="#full-schedule"><span id="hero-schedule-label">수업 시간표 보기</span><span aria-hidden="true">↗</span></a>
       <a href="#beginner-schedule">입문 수업 보기</a>
+      <a class="hero-visit" href="#visit-faq">첫 방문 안내</a>
     </div>
   </div>
   <div class="hero-media" aria-hidden="true">
-    <video class="hero-video" autoplay muted loop playsinline preload="metadata" hidden></video>
+    <video class="hero-video" muted loop playsinline preload="metadata" hidden></video>
   </div>
+  <button class="hero-playback" type="button" aria-label="영상 재생" hidden>▶</button>
 </section>
 <section class="content classes" id="classes"><div class="classes-heading"><h2>다가오는 수업</h2><span class="sample-label">예시 일정</span></div><div id="schedule"></div><a class="button schedule-more" href="#full-schedule">전체 시간표 보기 ↗</a></section>
 <section class="content studio-story" hidden>
   <p class="eyebrow">INSIDE ACTE.</p>
   <h2>바 앞에서 시작해,<br>음악 속에서 움직입니다.</h2>
-  <p>바에서 균형과 기본 동작을 익히고, 음악에 맞춰 배운 동작을 연결합니다.</p>
+  <ol class="studio-lesson-steps">
+    <li><strong>바에서 자세 잡기</strong><span>발 위치와 중심을 확인합니다.</span></li>
+    <li><strong>기본 동작 익히기</strong><span>무릎과 팔을 천천히 움직여 봅니다.</span></li>
+    <li><strong>음악에 맞춰 연결하기</strong><span>배운 동작을 짧은 순서로 이어갑니다.</span></li>
+  </ol>
 </section>
 <section class="content academy" id="academy">
   <div class="academy-viewport">
@@ -63,6 +70,7 @@
     <p>예시 스튜디오 2층입니다. 움직이기 편한 옷과 양말을 준비하고 수업 10분 전에 도착해 주세요. <a href="#visit-faq">첫 방문 절차 보기 ↗</a></p>
   </div>
 </section>
+<div class="studio-reading">
 <section class="content journal" id="journal">
   <p class="eyebrow">STUDIO JOURNAL</p><h2>발레 노트</h2>
   <details id="journal-first"><summary>첫 발레 수업에 챙겨갈 것</summary><p>움직이기 편한 옷과 양말, 물을 준비해 주세요. 수업 10분 전에 도착하면 여유 있게 준비할 수 있습니다.</p></details>
@@ -74,6 +82,7 @@
   <details><summary>예약번호는 어디에서 확인하나요?</summary><p>예약 완료 화면에서 번호를 복사할 수 있습니다. 상단 ‘내 예약’에서 해당 번호로 조회해 주세요.</p></details>
   <a class="button schedule-more" href="#faq">FAQ 전체 보기 ↗</a>
 </section>
+</div>
 <section class="content" id="my-booking">
   <p class="eyebrow">MY RESERVATION</p>
   <h2 tabindex="-1">내 예약 보기</h2>
@@ -98,6 +107,7 @@
   <details id="schedule-filter-panel" open>
     <summary>수업 필터<span id="filter-total"></span></summary>
   <div class="schedule-filters" aria-label="수업 필터" role="group">
+    <label class="date-filter" for="schedule-date">날짜 <select id="schedule-date"><option value="">모든 날짜</option></select></label>
     <div class="filter-chips" data-filter="day" role="group" aria-label="요일">
       <span aria-hidden="true">요일</span>
       <button type="button" data-value="" aria-pressed="true">모든 요일</button>
