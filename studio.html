@@ -1,26 +1,46 @@
 <!doctype html>
 <html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=visit-34"><script defer src="studio.js?v=visit-34"></script>
+<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=studio-39"><script defer src="studio.js?v=studio-39"></script>
 <body id="top">
 <header><a class="logo" href="#top"></a><nav aria-label="주 메뉴"><a href="#my-booking">내 예약</a><a href="#academy">학원 소개</a><a href="#journal">발레 노트</a><a class="nav-book" href="#full-schedule">수업 예약 ↗</a></nav></header>
 <div class="theme-picker">
-  <div class="theme-options" id="theme-options" role="group" aria-label="테마 선택" hidden>
+  <button type="button" class="theme-toggle" aria-label="시안과 테마 선택 열기" aria-expanded="false" aria-controls="theme-options">
+    <span class="theme-toggle-text">시안·테마</span><span class="theme-toggle-icon" aria-hidden="true">◐</span>
+  </button>
+  <div class="theme-options" id="theme-options" role="group" aria-label="시안과 테마 선택" hidden>
+  <span class="preview-label">테마</span>
   <button type="button" data-theme-choice="1" aria-pressed="false">아이보리</button>
   <button type="button" data-theme-choice="2" aria-pressed="false">블랙</button>
   <button type="button" data-theme-choice="3" aria-pressed="false">로즈</button>
+  <nav class="preview-designs" aria-label="시안 선택">
+    <span class="preview-label">시안</span>
+    <a href="studio.html?design=1" data-design-choice="1">1 · 클래식</a>
+    <a href="studio.html?design=2" data-design-choice="2">2 · 스튜디오</a>
+    <a href="studio.html?design=3" data-design-choice="3">3 · 시간표</a>
+  </nav>
   </div>
-  <button type="button" class="theme-toggle" aria-label="테마 선택 열기" aria-expanded="false" aria-controls="theme-options">
-    <span aria-hidden="true">◐</span>
-  </button>
 </div>
 <main id="studio-home">
-<section class="hero" aria-labelledby="hero-title"><video class="hero-video" autoplay muted loop playsinline preload="metadata" hidden aria-hidden="true"></video><div class="hero-copy"><p class="eyebrow" id="tagline"></p><h1 id="hero-title"></h1><p id="intro"></p><a class="button" href="#full-schedule">수업 시간표 보기 <span>↗</span></a></div></section>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="hero-kicker"><span id="tagline"></span><span class="sample-label">웹사이트 시안</span></p>
+    <h1 id="hero-title">성인 발레 수업</h1>
+    <p id="intro"></p>
+    <div class="hero-actions">
+      <a class="button" href="#full-schedule"><span id="hero-schedule-label">수업 시간표 보기</span><span aria-hidden="true">↗</span></a>
+      <a href="#beginner-schedule">입문 수업 보기</a>
+    </div>
+  </div>
+  <div class="hero-media" aria-hidden="true">
+    <video class="hero-video" autoplay muted loop playsinline preload="metadata" hidden></video>
+  </div>
+</section>
+<section class="content classes" id="classes"><div class="classes-heading"><h2>다가오는 수업</h2><span class="sample-label">예시 일정</span></div><div id="schedule"></div><a class="button schedule-more" href="#full-schedule">전체 시간표 보기 ↗</a></section>
 <section class="content studio-story" hidden>
   <p class="eyebrow">INSIDE ACTE.</p>
   <h2>바 앞에서 시작해,<br>음악 속에서 움직입니다.</h2>
   <p>바에서 균형과 기본 동작을 익히고, 음악에 맞춰 배운 동작을 연결합니다.</p>
 </section>
-<section class="content classes" id="classes"><p class="eyebrow">THE CLASSES</p><h2>다가오는 수업</h2><p>가까운 일정 3개를 먼저 확인하세요. 날짜와 잔여석은 시연용입니다.</p><div id="schedule"></div><a class="button schedule-more" href="#full-schedule">전체 시간표 보기 ↗</a></section>
 <section class="content academy" id="academy">
   <div class="academy-viewport">
     <div class="academy-slide">
@@ -73,9 +93,10 @@
 
 <main class="content extra-page" id="full-schedule" aria-labelledby="full-schedule-title" hidden>
   <a href="#classes">← 홈 시간표</a>
-  <p class="eyebrow">THE CLASSES</p>
-  <h1 id="full-schedule-title" tabindex="-1">전체 수업 시간표</h1>
-  <p>시작일이 가까운 수업부터 표시합니다. 날짜와 잔여석은 시연용입니다.</p>
+  <div class="classes-heading"><h1 id="full-schedule-title" tabindex="-1">전체 수업 시간표</h1><span class="sample-label">일정·잔여석 예시</span></div>
+
+  <details id="schedule-filter-panel" open>
+    <summary>수업 필터<span id="filter-total"></span></summary>
   <div class="schedule-filters" aria-label="수업 필터" role="group">
     <div class="filter-chips" data-filter="day" role="group" aria-label="요일">
       <span aria-hidden="true">요일</span>
@@ -98,7 +119,10 @@
       <button type="button" data-value="저녁" aria-pressed="false">저녁</button>
     </div>
   </div>
-  <div class="schedule-feedback"><p id="schedule-count" role="status"></p><button type="button" id="reset-filters">필터 초기화</button></div>
+    <button type="button" id="reset-filters">필터 초기화</button>
+  </details>
+  <p id="schedule-count" role="status"></p>
+  <p id="active-filters" hidden></p>
   <div id="full-schedule-list" class="schedule-list"></div>
 </main>
 <main id="booking-page" class="content" aria-labelledby="booking-title" hidden>
@@ -111,7 +135,7 @@
     <div><dt>수강 형태</dt><dd>선택한 날짜에 1회 참여</dd></div>
     <div><dt>결제 금액</dt><dd id="booking-price"></dd></div>
     <div><dt>담당 강사</dt><dd id="booking-teacher"></dd></div>
-    <div id="booking-reference" hidden><dt>예시 예약번호</dt><dd><span id="booking-code"></span> <button type="button" id="copy-booking">복사</button></dd></div>
+    <div id="booking-reference" hidden><dt>예시 예약번호</dt><dd><span id="booking-code"></span> <button type="button" id="copy-booking">복사</button><small class="booking-code-note">예시 예약은 이 탭에서 조회할 수 있습니다.</small></dd></div>
   </dl>
   <details>
     <summary>수업 내용과 강사 안내</summary>
@@ -125,6 +149,7 @@
   </fieldset>
   <p id="booking-receipt" hidden></p>
   <p id="copy-status" role="status"></p>
+  <div id="booking-finish" hidden><button class="button" id="booking-lookup">내 예약 보기 ↗</button> <a href="#full-schedule" data-booking-return>시간표로 돌아가기</a></div>
   <details id="booking-visit">
     <summary>첫 방문 안내 (예시)</summary>
     <ol>
@@ -134,8 +159,11 @@
     </ol>
     <a href="#visit-faq">복장과 시설 안내 보기 ↗</a>
   </details>
-  <p><strong>취소·변경 안내 (예시)</strong> · 수업 24시간 전까지 <a href="#contact">학원에 문의</a>해 주세요. 실제 환불 기준은 운영 시 안내합니다.</p>
-  <p class="notice">실제 예약·결제·문자 발송·관리자 연동 등 서버, DB 또는 외부 연동이 필요한 기능은 추후 제공 예정입니다.</p>
+  <details id="booking-policy">
+    <summary>취소·변경 접수는 수업 24시간 전까지 (예시)</summary>
+    <p>수업 시작 24시간 전까지 <a href="#contact">학원에 변경 또는 취소를 접수</a>해 주세요. 24시간은 접수 기준이며, 환불 금액은 학원의 운영 정책에 따라 안내됩니다. 당일 지각이나 결석은 <a href="#contact">문의 채널</a>로 알려 주세요.</p>
+  </details>
+  <p class="notice">예시 결제입니다. 실제 금액은 청구되지 않습니다.</p>
   <button class="button" id="preview">예시 결제 진행 ↗</button>
   <section id="booking-effects" hidden>
     <h2>예약 후 안내 예시</h2>
@@ -143,7 +171,6 @@
     <p><strong>수업 전 알림</strong> · 수업 전날, 수업 일시와 준비물을 안내합니다. 발송 채널과 시점은 운영 전 확정합니다.</p>
     <details><summary>기존 관리자에 전달할 예약 정보 예시</summary><p id="admin-preview"></p><p>기존 관리자 화면은 제공받은 구조에 맞춰 연동할 예정입니다.</p></details>
   </section>
-  <div id="booking-finish" hidden><button class="button" id="booking-lookup">내 예약 보기 ↗</button> <a href="#full-schedule" data-booking-return>시간표로 돌아가기</a></div>
 </main>
 <main class="content extra-page" id="faq" aria-labelledby="faq-title" hidden>
   <a href="#faq-preview">← 홈 FAQ</a>
@@ -157,7 +184,7 @@
     <p>편한 옷과 양말, 물을 챙겨 주세요. 발레화 착용 기준과 대여·탈의 시설 안내는 실제 학원 정책 확정 후 제공됩니다.</p>
   </details>
   <details><summary>예약번호는 어디에서 확인하나요?</summary><p>예약 완료 화면에서 번호를 복사할 수 있습니다. 상단 ‘내 예약’에서 해당 번호로 조회해 주세요.</p></details>
-  <details><summary>예약을 변경하거나 취소하려면 어떻게 하나요?</summary><p>예시 운영 기준으로 수업 24시간 전까지 <a href="#contact">학원에 문의</a>해 주세요. 실제 취소·환불 기준은 운영 시 안내합니다.</p></details>
+  <details><summary>예약을 변경하거나 취소하려면 어떻게 하나요?</summary><p>예시 기준으로 수업 시작 24시간 전까지 <a href="#contact">학원에 변경 또는 취소를 접수</a>해 주세요. 실제 환불 금액은 학원 운영 정책에 따라 안내됩니다.</p></details>
   <section id="contact" class="contact-card" aria-labelledby="contact-title">
     <h2 id="contact-title" tabindex="-1">문의하기</h2>
     <p>문의 채널 안내 예시입니다. 실제 연락처는 운영 시 등록합니다.</p>
@@ -182,6 +209,5 @@
       <div><dt>이메일</dt><dd>hello@example.com</dd></div>
     </dl>
   </section>
-  <nav aria-label="하단 메뉴"><a href="index.html">다른 시안 보기 ↗</a></nav>
 </footer>
 </body></html>

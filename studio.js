@@ -1,20 +1,33 @@
 const designs = {
-  1: { name: 'ATELIER BALLET', label: 'SEOUL · CLASSICAL BALLET', headline: '한 동작씩,\n우아해지는 시간.', intro: '기본부터 차분하게 익히는 성인 클래식 발레.' },
-  2: { name: 'ACTE.', label: 'THE BALLET STUDIO', headline: '움직임에\n집중하는 순간.', intro: '정교한 테크닉과 음악이 만나는 저녁의 발레 수업.' },
-  3: { name: '소소발레', label: 'BALLET FOR EVERY BODY', headline: '오늘, 발레\n해볼까요?', intro: '처음이어도 편하게 시작하는 우리 동네 성인 발레.' },
+  1: { name: 'ATELIER BALLET', label: '성인 클래식 발레', headline: '기본 자세부터\n차근차근', intro: '발레가 처음이라면 바를 잡고 기본 발 위치부터 배워 보세요.' },
+  2: { name: 'ACTE.', label: '성인 발레 스튜디오', headline: '바에서 배운 동작을\n음악에 맞춰', intro: '발레 첫걸음부터 기본 동작을 연결하는 클래식 베이직까지.' },
+  3: { name: '소소발레', label: '성인 취미 발레', headline: '처음 시작하는\n성인 발레', intro: '발레 경험 없이도 원하는 날짜에 한 번 예약해 참여할 수 있어요.' },
 };
 
 const requested = new URLSearchParams(location.search).get('design');
 const designNumber = Object.hasOwn(designs, requested) ? requested : '1';
 const design = designs[designNumber];
 document.body.dataset.design = designNumber;
+document.querySelector('[data-design-choice="' + designNumber + '"]')?.setAttribute('aria-current', 'page');
 const themeToggle = document.querySelector('.theme-toggle');
 const themeOptions = document.querySelector('#theme-options');
-themeToggle.addEventListener('click', () => {
-  const expanded = themeOptions.hidden;
+function setPreviewMenu(expanded) {
   themeOptions.hidden = !expanded;
   themeToggle.setAttribute('aria-expanded', String(expanded));
-  themeToggle.setAttribute('aria-label', expanded ? '테마 선택 닫기' : '테마 선택 열기');
+  themeToggle.setAttribute('aria-label', expanded ? '시안과 테마 선택 닫기' : '시안과 테마 선택 열기');
+}
+themeToggle?.addEventListener('click', () => setPreviewMenu(themeOptions.hidden));
+themeToggle?.parentElement.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || themeOptions.hidden) return;
+  setPreviewMenu(false);
+  themeToggle.focus();
+});
+
+const comparisonSections = new Set(['#classes', '#full-schedule', '#beginner-schedule', '#academy', '#journal', '#faq', '#visit-faq']);
+themeOptions?.querySelectorAll('[data-design-choice]').forEach(link => {
+  link.addEventListener('click', () => {
+    link.hash = comparisonSections.has(location.hash) ? location.hash : '';
+  });
 });
 
 const themeButtons = document.querySelectorAll('[data-theme-choice]');
@@ -40,7 +53,8 @@ if (designNumber === '2') {
 }
 
 if (designNumber === '3') {
-  document.querySelector('.hero .button').hidden = true;
+  document.querySelector('.hero .button').href = '#classes';
+  document.querySelector('#hero-schedule-label').textContent = '다가오는 수업 보기';
 }
 
 const classes = [
@@ -104,6 +118,10 @@ function createScheduleRow({ item, id }, returnHash) {
   time.textContent = item.day;
   row.querySelector('h3').textContent = item.name;
   row.querySelector('small').textContent = '1회 수업 · ' + item.info + ' · ' + item.teacher + ' 강사 · ' + item.recommendation;
+  const lesson = document.createElement('p');
+  lesson.className = 'class-lesson';
+  lesson.textContent = item.lesson;
+  row.querySelector('h3').parentElement.append(lesson);
   row.querySelector('.price').textContent = item.price;
   const button = row.querySelector('button');
   button.setAttribute('aria-label', item.name + ' 예약 · ' + item.day);
@@ -181,7 +199,7 @@ lookupForm.addEventListener('submit', event => {
 
   for (const [label, value] of [
     ['예약번호', booking.code], ['수업', booking.name], ['시간', booking.day],
-    ['담당 강사', booking.teacher || '예시 강사'], ['취소·변경 (예시)', '수업 24시간 전까지 학원에 문의'], ['결제 금액', booking.price], ['결제수단', booking.payment], ['상태', '예약 완료 (예시)'],
+    ['담당 강사', booking.teacher || '예시 강사'], ['취소·변경 (예시)', '수업 24시간 전까지 변경·취소 접수'], ['결제 금액', booking.price], ['결제수단', booking.payment], ['상태', '예약 완료 (예시)'],
   ]) {
     const row = document.createElement('div');
     const term = document.createElement('dt');
@@ -311,6 +329,13 @@ function filterSchedule() {
 }
 
 const filterGroups = document.querySelectorAll('.filter-chips');
+const filterPanel = document.querySelector('#schedule-filter-panel');
+const narrowSchedule = matchMedia('(max-width: 600px)');
+function setFilterPanelDefault() {
+  filterPanel.open = !narrowSchedule.matches;
+}
+narrowSchedule.addEventListener('change', setFilterPanelDefault);
+setFilterPanelDefault();
 
 function refreshScheduleFilters() {
   for (const group of filterGroups) {
@@ -318,6 +343,13 @@ function refreshScheduleFilters() {
       button.setAttribute('aria-pressed', String(button.dataset.value === filters[group.dataset.filter]));
     }
   }
+  const active = [...document.querySelectorAll('.filter-chips button[aria-pressed="true"]')]
+    .filter(button => button.dataset.value)
+    .map(button => button.textContent.trim());
+  const summary = document.querySelector('#active-filters');
+  summary.textContent = '선택한 필터 · ' + active.join(' · ');
+  summary.hidden = active.length === 0;
+  document.querySelector('#filter-total').textContent = active.length ? ' · ' + active.length + '개 적용' : '';
   filterSchedule();
 }
 
@@ -503,6 +535,6 @@ async function syncHeroVideo() {
   }
 }
 
-heroVideo.src = 'cover-' + designNumber + '.mp4';
+heroVideo.src = designNumber === '2' ? 'studio-tour-2.mp4' : 'cover-' + designNumber + '.mp4';
 syncHeroVideo();
 window.addEventListener('hashchange', syncHeroVideo);
