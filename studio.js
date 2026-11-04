@@ -4,7 +4,9 @@ const designs = {
   3: { name: '소소발레', label: '성인 취미 발레', headline: '처음 시작하는\n성인 발레', intro: '발레 경험 없이도 원하는 날짜에 한 번 예약해 참여할 수 있어요.' },
 };
 
-const requested = new URLSearchParams(location.search).get('design');
+const previewParams = new URLSearchParams(location.search);
+const requested = previewParams.get('design');
+let previewTheme = previewParams.get('theme');
 const designNumber = Object.hasOwn(designs, requested) ? requested : '1';
 const design = designs[designNumber];
 document.body.dataset.design = designNumber;
@@ -26,7 +28,10 @@ themeToggle?.parentElement.addEventListener('keydown', event => {
 const comparisonSections = new Set(['#classes', '#full-schedule', '#beginner-schedule', '#academy', '#journal', '#faq', '#visit-faq']);
 themeOptions?.querySelectorAll('[data-design-choice]').forEach(link => {
   link.addEventListener('click', () => {
-    link.hash = comparisonSections.has(location.hash) ? location.hash : '';
+    const destination = new URL(link.href);
+    if (Object.hasOwn(designs, previewTheme)) destination.searchParams.set('theme', previewTheme);
+    destination.hash = comparisonSections.has(location.hash) ? location.hash : '';
+    link.href = destination.href;
   });
 });
 
@@ -37,9 +42,12 @@ function applyTheme(theme) {
     button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme));
   });
 }
-applyTheme(designNumber);
+applyTheme(Object.hasOwn(designs, previewTheme) ? previewTheme : designNumber);
 themeButtons.forEach(button => {
-  button.addEventListener('click', () => applyTheme(button.dataset.themeChoice));
+  button.addEventListener('click', () => {
+    previewTheme = button.dataset.themeChoice;
+    applyTheme(previewTheme);
+  });
 });
 document.title = design.name + ' | 발레 스튜디오';
 document.querySelectorAll('.logo').forEach(logo => { logo.textContent = design.name; });
@@ -48,16 +56,52 @@ document.querySelector('#tagline').textContent = design.label;
 document.querySelector('#hero-title').textContent = design.headline;
 document.querySelector('#intro').textContent = design.intro;
 
+const home = document.querySelector('#studio-home');
+const homeSchedule = document.querySelector('#classes');
+const academySection = document.querySelector('#academy');
+const scheduleHeading = homeSchedule.querySelector('h2');
+
+if (designNumber === '1') {
+  homeSchedule.before(academySection);
+}
+
 if (designNumber === '2') {
-  document.querySelector('.studio-story').hidden = false;
+  const media = document.querySelector('.hero-media');
+  media.removeAttribute('aria-hidden');
+  media.querySelector('video').setAttribute('aria-hidden', 'true');
+  media.append(document.querySelector('.hero-playback'));
+  const story = document.querySelector('.studio-story');
+  story.hidden = false;
+  homeSchedule.before(story);
+  scheduleHeading.textContent = '수업 프로그램';
 }
 
 if (designNumber === '3') {
-  document.querySelector('.hero .button').href = '#classes';
-  document.querySelector('#hero-schedule-label').textContent = '다가오는 수업 보기';
+  document.querySelector('#hero-schedule-label').textContent = '전체 시간표 보기';
+  const heroHeading = document.querySelector('#hero-title');
+  const secondaryHeading = document.createElement('h2');
+  secondaryHeading.id = heroHeading.id;
+  secondaryHeading.textContent = heroHeading.textContent;
+  heroHeading.replaceWith(secondaryHeading);
+
+  const workspaceHeading = document.createElement('h1');
+  workspaceHeading.textContent = '성인 발레 수업 예약';
+  workspaceHeading.className = 'workspace-title';
+  homeSchedule.prepend(workspaceHeading);
+  const firstVisit = document.createElement('p');
+  firstVisit.className = 'workspace-intro';
+  firstVisit.append('발레 경험 없이 1회 참여할 수 있어요. ');
+  const beginnerLink = document.createElement('a');
+  beginnerLink.href = '#beginner-schedule';
+  beginnerLink.textContent = '입문 수업 보기';
+  firstVisit.append(beginnerLink);
+  workspaceHeading.after(firstVisit);
   document.querySelector('.hero-entry').hidden = true;
-  const homeSchedule = document.querySelector('#classes');
-  homeSchedule.after(document.querySelector('#my-booking'));
+  const bookingWorkspace = document.createElement('div');
+  bookingWorkspace.className = 'booking-workspace';
+  home.prepend(bookingWorkspace);
+  bookingWorkspace.append(homeSchedule, document.querySelector('#my-booking'));
+  academySection.before(document.querySelector('.studio-reading'));
 }
 
 const classes = [
@@ -112,6 +156,7 @@ const copyStatus = document.querySelector('#copy-status');
 function createScheduleRow({ item, id }, returnHash) {
   const row = document.createElement('article');
   row.className = 'class-row';
+  row.dataset.program = item.name;
   row.dataset.date = item.date;
   row.dataset.day = item.weekday;
   row.dataset.level = item.level;
@@ -136,7 +181,64 @@ function createScheduleRow({ item, id }, returnHash) {
   });
   return row;
 }
-schedule.append(...sessions.slice(0, 3).map(session => createScheduleRow(session, '#classes')));
+const upcoming = sessions.slice(0, 3);
+const upcomingRows = upcoming.map(session => createScheduleRow(session, '#classes'));
+if (designNumber !== '3') {
+  const next = document.querySelector('.next-session');
+  const session = upcoming[0];
+  const label = document.createElement('strong');
+  label.textContent = '가장 가까운 예시 수업';
+  const description = document.createElement('span');
+  description.textContent = [session.item.name, session.item.level, session.item.day, session.item.price].join(' · ');
+  const bookingLink = document.createElement('a');
+  bookingLink.href = '#book-' + session.id;
+  bookingLink.textContent = '이 수업 예약 ↗';
+  bookingLink.addEventListener('click', () => {
+    previousBookingButton = bookingLink;
+    bookingReturnLinks.forEach(link => { link.href = '#next-session'; });
+  });
+  next.append(label, description, bookingLink);
+  next.hidden = false;
+}
+if (designNumber === '2') {
+  const programImages = ['cover-1.jpg', 'academy-2.jpg', 'cover-3.jpg'];
+  upcomingRows.forEach((row, index) => {
+    const photo = document.createElement('img');
+    photo.className = 'program-photo';
+    photo.src = programImages[index];
+    photo.loading = 'lazy';
+    photo.alt = '';
+    row.prepend(photo);
+    const dates = document.createElement('a');
+    dates.className = 'program-dates';
+    dates.href = '#program-' + (index + 1);
+    dates.textContent = '다른 날짜 보기';
+    dates.setAttribute('aria-label', upcoming[index].item.name + ' 다른 날짜 보기');
+    row.querySelector('h3').parentElement.append(dates);
+  });
+}
+schedule.append(...upcomingRows);
+
+if (designNumber === '3') {
+  const controls = document.querySelector('#home-date-controls');
+  const buttons = upcoming.map(({ item }, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-controls', 'schedule');
+    button.setAttribute('aria-pressed', String(index === 0));
+    button.textContent = item.day.split(' ').slice(0, 3).join(' ');
+    button.addEventListener('click', () => {
+      buttons.forEach((option, position) => {
+        option.setAttribute('aria-pressed', String(position === index));
+        upcomingRows[position].hidden = position !== index;
+      });
+    });
+    return button;
+  });
+  upcomingRows.forEach((row, index) => { row.hidden = index !== 0; });
+  controls.append(...buttons);
+  controls.hidden = false;
+}
 const weekHeading = new Intl.DateTimeFormat('ko-KR', {
   month: 'long', day: 'numeric', timeZone: 'UTC',
 });
@@ -227,8 +329,10 @@ function showPage({ smooth = false } = {}) {
   const item = bookingId ? classes[Number(bookingId) - 1] : undefined;
   const beginnerSchedule = hash === '#beginner-schedule';
   const visitFaq = hash === '#visit-faq';
-  const pageHash = beginnerSchedule ? '#full-schedule' : hash === '#contact' || visitFaq ? '#faq' : hash;
-  if (beginnerSchedule) resetScheduleFilters('입문');
+  const programId = designNumber === '2' ? /^#program-([1-3])$/.exec(hash)?.[1] : undefined;
+  const program = programId ? classes[Number(programId) - 1].name : '';
+  const pageHash = beginnerSchedule || program ? '#full-schedule' : hash === '#contact' || visitFaq ? '#faq' : hash;
+  if (beginnerSchedule || program) resetScheduleFilters(beginnerSchedule ? '입문' : '', program);
   const extraPage = extraPages.find(page => '#' + page.id === pageHash);
   extraPages.forEach(page => {
     page.hidden = page !== extraPage;
@@ -263,7 +367,7 @@ function showPage({ smooth = false } = {}) {
     const target = document.getElementById(hash.slice(1));
     if (target?.matches('.journal details')) target.open = true;
     target?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
-    if (hash === '#classes' && schedule.contains(previousBookingButton)) {
+    if (target?.contains(previousBookingButton) && !previousBookingButton.closest('[hidden]')) {
       previousBookingButton.focus({ preventScroll: true });
     }
     previousBookingButton = undefined;
@@ -314,7 +418,7 @@ document.querySelector('#booking-lookup').addEventListener('click', () => {
   lookupForm.requestSubmit();
 });
 
-const filters = { date: '', day: '', level: '', period: '' };
+const filters = { program: '', date: '', day: '', level: '', period: '' };
 
 function filterSchedule() {
   let count = 0;
@@ -366,15 +470,29 @@ function refreshScheduleFilters() {
     .filter(button => button.dataset.value)
     .map(button => button.textContent.trim());
   if (filters.date) active.unshift(dateFilter.selectedOptions[0].textContent);
+  if (filters.program) active.unshift(filters.program);
   const summary = document.querySelector('#active-filters');
   summary.textContent = '선택한 필터 · ' + active.join(' · ');
+  if (filters.program) {
+    const clearProgram = document.createElement('button');
+    clearProgram.type = 'button';
+    clearProgram.className = 'clear-program';
+    clearProgram.textContent = '프로그램 선택 해제';
+    clearProgram.addEventListener('click', () => {
+      filters.program = '';
+      if (location.hash.startsWith('#program-')) history.replaceState(history.state, '', '#full-schedule');
+      refreshScheduleFilters();
+      document.querySelector('#full-schedule-title').focus({ preventScroll: true });
+    });
+    summary.append(' ', clearProgram);
+  }
   summary.hidden = active.length === 0;
   document.querySelector('#filter-total').textContent = active.length ? ' · ' + active.length + '개 적용' : '';
   filterSchedule();
 }
 
-function resetScheduleFilters(level = '') {
-  Object.assign(filters, { date: '', day: '', level, period: '' });
+function resetScheduleFilters(level = '', program = '') {
+  Object.assign(filters, { program, date: '', day: '', level, period: '' });
   refreshScheduleFilters();
 }
 
@@ -386,7 +504,10 @@ for (const group of filterGroups) {
     refreshScheduleFilters();
   });
 }
-document.querySelector('#reset-filters').addEventListener('click', () => resetScheduleFilters());
+document.querySelector('#reset-filters').addEventListener('click', () => {
+  if (location.hash.startsWith('#program-')) history.replaceState(history.state, '', '#full-schedule');
+  resetScheduleFilters();
+});
 filterSchedule();
 window.addEventListener('hashchange', showPage);
 showPage();
@@ -416,6 +537,31 @@ const academyViewport = academy.querySelector('.academy-viewport');
 const academySlide = academyViewport.querySelector('.academy-slide');
 const academyDots = document.querySelector('#academy-dots');
 const academyAutoplay = document.querySelector('#academy-autoplay');
+if (designNumber !== '2') {
+  academyViewport.hidden = true;
+  academy.querySelector('.academy-controls').hidden = true;
+  academy.querySelector(designNumber === '1' ? '.academy-editorial' : '.academy-guide').hidden = false;
+}
+if (designNumber === '1') {
+  for (const note of document.querySelectorAll('.studio-reading details')) {
+    const article = document.createElement('article');
+    article.className = 'reading-article';
+    article.id = note.id;
+    const heading = document.createElement('h3');
+    heading.textContent = note.querySelector('summary').textContent;
+    article.append(heading, ...note.querySelectorAll('p'));
+    note.replaceWith(article);
+  }
+}
+if (designNumber === '2') {
+  academySlide.querySelector('h2').textContent = '스튜디오 투어';
+}
+if (designNumber === '3') {
+  academy.querySelector('.visit-note').hidden = true;
+  document.querySelector('.help-directory').hidden = false;
+  document.querySelector('.faq-questions').hidden = true;
+}
+
 let academyIndex = 0;
 let academyTimer;
 let academyVisible = false;
@@ -426,6 +572,7 @@ const academyDotButtons = academySlides.map((slide, index) => {
   const button = document.createElement('button');
   button.type = 'button';
   button.setAttribute('aria-label', (index + 1) + '번 슬라이드 · ' + slide.label);
+  button.textContent = slide.label;
   button.addEventListener('click', () => manuallySelectAcademySlide(index));
   academyDots.append(button);
   return button;
@@ -445,7 +592,7 @@ function showAcademySlide() {
 
 function scheduleAcademySlide() {
   clearTimeout(academyTimer);
-  if (academyPlaying && academyVisible && !document.hidden && !swipeStart) {
+  if (designNumber === '2' && academyPlaying && academyVisible && !document.hidden && !swipeStart) {
     academyTimer = setTimeout(() => selectAcademySlide(academyIndex + 1), 6000);
   }
 }

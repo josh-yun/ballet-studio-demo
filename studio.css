@@ -363,3 +363,123 @@ header .nav-book{background:var(--accent);color:#fff;padding:8px 12px;border:0}
   :is([data-design="1"],[data-design="2"]) .hero-actions{margin-top:12px;gap:8px 14px}
   :is([data-design="1"],[data-design="2"]) #classes{padding-top:24px}
 }
+
+/* Classic: an editorial spread, followed by a compact schedule index. */
+[data-design="1"] .academy{max-width:1320px}
+[data-design="1"] .academy-slide{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+[data-design="1"] .academy-slide img{aspect-ratio:16/9}
+[data-design="1"] .academy-controls{justify-content:flex-start}
+[data-design="1"] .schedule-week{display:block}
+[data-design="1"] #full-schedule-list .class-row{display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto auto;align-items:center;border:0;border-bottom:1px solid color-mix(in srgb,var(--ink) 22%,transparent);padding:16px 0}
+[data-design="1"] #full-schedule-list .price{margin:0}
+
+/* Studio: a guided tour and a gallery of individual programs. */
+[data-design="2"] .studio-story{max-width:none;padding-inline:max(6vw,calc((100vw - 1100px)/2));background:color-mix(in srgb,var(--paper) 90%,var(--accent));}
+[data-design="2"] #schedule .class-row{display:flex;flex-direction:column;align-items:stretch;padding:0;overflow:hidden}
+[data-design="2"] #schedule .class-row > :not(.program-photo){margin-inline:16px}
+[data-design="2"] #schedule .class-row time{margin-top:4px}
+[data-design="2"] #schedule .class-row .price{margin-top:auto}
+[data-design="2"] #schedule .row-button{align-self:flex-start;margin-bottom:16px}
+.program-photo{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
+[data-design="2"] .academy{border-top:1px solid color-mix(in srgb,var(--ink) 20%,transparent)}
+
+/* Schedule: date selection and reservation lookup form the home workspace. */
+.booking-workspace{max-width:1280px;margin:auto;padding:38px 6vw;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:32px;align-items:start}
+.booking-workspace > .content{width:100%;margin:0;padding:0}
+[data-design="3"] .booking-workspace #classes{padding:0}
+[data-design="3"] .booking-workspace #my-booking{padding:22px;border:1px solid color-mix(in srgb,var(--ink) 20%,transparent);border-radius:18px}
+.booking-workspace h2{font-size:clamp(26px,4vw,44px)}
+.home-date-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.home-date-controls button{min-height:44px;padding:7px 13px;border:1px solid var(--accent);border-radius:8px;color:var(--ink);background:var(--paper)}
+.home-date-controls button[aria-pressed="true"]{color:white;background:var(--accent)}
+[data-design="3"] #schedule .class-row{border:1px solid color-mix(in srgb,var(--ink) 20%,transparent);border-radius:12px;padding:16px;grid-template-columns:minmax(0,1fr) auto}
+[data-design="3"] #schedule .class-row time{grid-column:1/-1}
+[data-design="3"] #schedule .class-row > div{grid-column:1/-1}
+[data-design="3"] #schedule .class-row .price{grid-column:1}
+[data-design="3"] #schedule .class-row button{grid-column:2;grid-row:auto;justify-self:end}
+[data-design="3"] .schedule-week{grid-template-columns:minmax(0,1fr)}
+[data-design="3"] #full-schedule-list .class-row{display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto auto;align-items:center;border-radius:12px}
+[data-design="3"] #full-schedule-list .price{margin:0}
+
+@media(max-width:760px){
+  .booking-workspace{grid-template-columns:minmax(0,1fr);gap:24px;padding-block:24px}
+  [data-design="1"] #full-schedule-list .class-row,
+  [data-design="3"] #full-schedule-list .class-row{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  [data-design="1"] #full-schedule-list .class-row > div,
+  [data-design="3"] #full-schedule-list .class-row > div{grid-column:1/-1;grid-row:2}
+  [data-design="1"] #full-schedule-list .class-row .row-button,
+  [data-design="3"] #full-schedule-list .class-row .row-button{grid-column:2;grid-row:3}
+}
+@media(max-width:600px){
+  [data-design="1"] .academy-slide{grid-template-columns:minmax(0,1fr)}
+  [data-design="2"] #schedule .class-row > :not(.program-photo){margin-inline:12px}
+  [data-design="3"] #schedule .class-row time{grid-row:1}
+  [data-design="3"] #schedule .class-row > div{grid-row:2}
+  [data-design="3"] #schedule .class-row button{grid-row:3}
+}
+
+.next-session{scroll-margin-top:100px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;padding:10px 6vw;border-bottom:1px solid color-mix(in srgb,var(--ink) 18%,transparent);font-size:14px}
+.next-session a{margin-inline-start:auto;min-height:44px;display:inline-flex;align-items:center;font-weight:750}
+.workspace-title{font-size:clamp(30px,4.5vw,52px);line-height:1.15;margin:0 0 6px}
+.workspace-intro{margin:0 0 16px}
+[data-design="3"] .hero #hero-title{font-size:clamp(26px,4.3vw,58px);white-space:pre-line;line-height:1.12;margin:10px 0}
+[data-design="3"] .booking-workspace .classes-heading h2{font-size:clamp(20px,2.4vw,30px)}
+@media(max-width:600px){
+  .next-session{align-items:baseline}
+  .next-session a{margin-inline-start:0}
+  [data-design="2"] #schedule .class-row{display:grid;grid-template-columns:74px minmax(0,1fr) auto;gap:6px 10px;padding:12px;align-items:start}
+  [data-design="2"] #schedule .class-row > :not(.program-photo){margin:0}
+  [data-design="2"] #schedule .program-photo{grid-column:1;grid-row:1/span 2;aspect-ratio:1;border-radius:6px}
+  [data-design="2"] #schedule .class-row time{grid-column:2/-1;grid-row:1}
+  [data-design="2"] #schedule .class-row > div{grid-column:2/-1;grid-row:2}
+  [data-design="2"] #schedule .class-row .price{grid-column:1/3;grid-row:3;align-self:center}
+  [data-design="2"] #schedule .class-row button{grid-column:3;grid-row:3}
+  [data-design="3"] .hero #hero-title{font-size:clamp(23px,6vw,32px)}
+}
+
+.reading-article{border-top:1px solid color-mix(in srgb,var(--ink) 20%,transparent);padding:12px 0}
+.reading-article h3{margin:0 0 6px}
+.reading-article p{margin:0}
+.editorial-photos{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:14px;align-items:end;margin-top:24px}
+.editorial-photos img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.editorial-photos figure:last-child img{aspect-ratio:1}
+[data-design="2"] #academy-dots{gap:5px;flex-wrap:wrap}
+[data-design="2"] #academy-dots button{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--ink) 24%,transparent);border-radius:6px}
+[data-design="2"] #academy-dots button::before{display:none}
+[data-design="2"] #academy-dots button[aria-current="true"]{background:var(--accent);color:#fff}
+[data-design="2"] .academy-controls{flex-wrap:wrap}
+.academy-guide dl{display:grid;gap:0;margin:20px 0}
+.academy-guide dl > div{display:grid;grid-template-columns:6rem 1fr;gap:10px;padding:12px 0;border-top:1px solid color-mix(in srgb,var(--ink) 20%,transparent)}
+.academy-guide dt{font-weight:750}
+.academy-guide dd{margin:0}
+.help-directory nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.help-directory nav a{display:grid;gap:4px;padding:14px;border:1px solid color-mix(in srgb,var(--ink) 22%,transparent);border-radius:9px;text-decoration:none}
+.help-directory nav a:hover strong{text-decoration:underline}
+.help-directory nav span{font-size:14px}
+@media(max-width:600px){
+  .editorial-photos{gap:8px}
+  [data-design="2"] #academy-dots{flex-basis:100%}
+  .help-directory nav{grid-template-columns:minmax(0,1fr)}
+}
+
+/* The studio tour uses a separate media frame; the classic concept owns the overlay. */
+[data-design="2"] .hero{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
+  align-items:center;gap:clamp(20px,5vw,68px);min-height:0;
+  padding:clamp(24px,5vw,60px) 6vw;color:var(--ink);background:var(--paper);
+}
+[data-design="2"] .hero-media{position:relative;z-index:auto;inset:auto;width:min(100%,500px);height:auto;aspect-ratio:720/690;background:var(--portrait) center/contain no-repeat}
+[data-design="2"] .hero-media::before,[data-design="2"] .hero::after{content:none}
+[data-design="2"] .hero-video{object-position:center}
+[data-design="2"] .hero .button{background:var(--accent);color:#fff}
+[data-design="2"] .hero h1{font-size:clamp(34px,5vw,72px)}
+[data-design="2"] .hero-playback{right:8px;top:8px}
+@media(max-width:600px){
+  [data-design="2"] .hero{grid-template-columns:minmax(0,1fr);padding:16px 6vw;gap:12px}
+  [data-design="2"] .hero-media{grid-column:1;grid-row:2;width:min(100%,170px);justify-self:start}
+  [data-design="2"] .hero-copy{grid-column:1;grid-row:1}
+  [data-design="2"] .hero h1{font-size:clamp(28px,8vw,48px)}
+}
+
+.program-dates{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:700}
+.clear-program{min-height:44px;margin-inline-start:8px;padding:4px 8px;background:transparent;color:var(--ink);border:1px solid var(--accent);border-radius:6px}

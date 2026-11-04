@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=reference-access-47"><script defer src="studio.js?v=reference-access-47"></script>
+<title>발레 스튜디오</title><link rel="stylesheet" href="studio.css?v=layout-54"><script defer src="studio.js?v=layout-54"></script>
 <body id="top">
 <header><a class="logo" href="#top"></a><nav aria-label="주 메뉴"><a href="#my-booking">내 예약</a><a href="#academy">학원 소개</a><a href="#journal">발레 노트</a><a class="nav-book" href="#full-schedule">수업 예약 ↗</a></nav></header>
 <div class="theme-picker">
@@ -38,7 +38,8 @@
   </div>
   <button class="hero-playback" type="button" aria-label="영상 재생" hidden>▶</button>
 </section>
-<section class="content classes" id="classes"><div class="classes-heading"><h2>다가오는 수업</h2><span class="sample-label">예시 일정</span></div><div id="schedule"></div><a class="button schedule-more" href="#full-schedule">전체 시간표 보기 ↗</a></section>
+<aside id="next-session" class="next-session" aria-label="가장 가까운 수업" hidden></aside>
+<section class="content classes" id="classes"><div class="classes-heading"><h2>다가오는 수업</h2><span class="sample-label">예시 일정</span></div><div id="home-date-controls" class="home-date-controls" role="group" aria-label="다가오는 수업 날짜" hidden></div><div id="schedule"></div><a class="button schedule-more" href="#full-schedule">전체 시간표 보기 ↗</a></section>
 <section class="content studio-story" hidden>
   <p class="eyebrow">INSIDE ACTE.</p>
   <h2>바 앞에서 시작해,<br>음악 속에서 움직입니다.</h2>
@@ -49,6 +50,24 @@
   </ol>
 </section>
 <section class="content academy" id="academy">
+  <div class="academy-editorial" hidden>
+    <h2>학원 소개</h2>
+    <p>자연광이 들어오는 연습실에서 바를 잡고 기본 자세를 익힙니다. 처음 배우는 성인도 따라올 수 있도록 한 동작씩 설명합니다.</p>
+    <div class="editorial-photos">
+      <figure><img src="academy-1.jpg" loading="lazy" alt="거울과 발레 바가 있는 예시 연습실"><figcaption>연습실</figcaption></figure>
+      <figure><img src="hero-1.jpg" loading="lazy" alt="발레 기본 자세를 연습하는 예시 모습"><figcaption>기본 자세 연습</figcaption></figure>
+    </div>
+  </div>
+  <div class="academy-guide" hidden>
+    <h2>학원 소개와 방문 안내</h2>
+    <p>성인 입문 수업은 바를 잡고 발 위치와 기본 동작부터 배웁니다.</p>
+    <dl>
+      <div><dt>찾아오기</dt><dd>예시 스튜디오 2층 · 수업 시작 10분 전 도착</dd></div>
+      <div><dt>체크인</dt><dd>데스크에서 예약번호를 보여주세요.</dd></div>
+      <div><dt>준비물</dt><dd>움직이기 편한 옷, 양말, 물</dd></div>
+    </dl>
+    <a href="#visit-faq">자세한 첫 방문 안내 ↗</a>
+  </div>
   <div class="academy-viewport">
     <div class="academy-slide">
       <figure><img id="academy-photo" width="720" height="690" loading="lazy" alt="발레 바와 거울이 있는 예시 학원 내부"><figcaption>학원 공간 예시 이미지</figcaption></figure>
@@ -60,8 +79,8 @@
     </div>
   </div>
   <div class="academy-controls" role="group" aria-label="학원 소개 슬라이드">
-    <button type="button" id="academy-prev" aria-label="이전 슬라이드">←</button>
     <div id="academy-dots"></div>
+    <button type="button" id="academy-prev" aria-label="이전 슬라이드">←</button>
     <button type="button" id="academy-next" aria-label="다음 슬라이드">→</button>
     <button type="button" id="academy-autoplay" aria-label="슬라이드 자동 넘김" aria-pressed="true">Ⅱ</button>
   </div>
@@ -77,10 +96,21 @@
   <details id="journal-barre"><summary>바 수업은 어떻게 진행되나요?</summary><p>바를 잡고 발의 위치와 기본 동작을 익힌 뒤, 바 없이 짧은 동작을 이어갑니다. 처음에는 동작의 높이보다 균형에 집중합니다.</p></details>
 </section>
 <section class="content faq-preview" id="faq-preview">
+  <div class="help-directory" hidden>
+    <h2>무엇을 도와드릴까요?</h2>
+    <nav aria-label="도움말 바로가기">
+      <a href="#beginner-schedule"><strong>첫 수업 고르기</strong><span>경험 없이 들을 수 있는 수업 ↗</span></a>
+      <a href="#my-booking"><strong>예약번호로 조회</strong><span>예약한 날짜와 수업 확인 ↗</span></a>
+      <a href="#visit-faq"><strong>방문 준비하기</strong><span>준비물과 체크인 절차 ↗</span></a>
+      <a href="#faq"><strong>전체 FAQ</strong><span>예약 변경과 자주 묻는 질문 ↗</span></a>
+    </nav>
+  </div>
+  <div class="faq-questions">
   <p class="eyebrow">FAQ</p><h2>자주 묻는 질문</h2>
   <details><summary>발레가 처음인데 어떤 수업을 들으면 되나요?</summary><p>발레 경험이 없다면 ‘발레 첫걸음’을 추천합니다. 원하는 날짜에 한 번 예약해 기본 자세와 발 위치부터 배울 수 있습니다. <a href="#beginner-schedule">입문 추천 수업 보기 ↗</a></p></details>
   <details><summary>예약번호는 어디에서 확인하나요?</summary><p>예약 완료 화면에서 번호를 복사할 수 있습니다. 상단 ‘내 예약’에서 해당 번호로 조회해 주세요.</p></details>
   <a class="button schedule-more" href="#faq">FAQ 전체 보기 ↗</a>
+  </div>
 </section>
 </div>
 <section class="content" id="my-booking">
